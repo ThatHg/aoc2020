@@ -11,10 +11,52 @@ fn main() {
             "day1_2" => day1_2(),
             "day2_1" => day2_1(),
             "day2_2" => day2_2(),
+            "day3_1" => day3_1(),
+            "day3_2" => day3_2(),
             _ => println!("No solution for puzzle: {}", puzzle),
         },
         None => println!("No input..."),
     }
+}
+
+fn traverse(woods: &Vec<Vec<char>>, right: usize, down: usize, tree: char) -> usize {
+    let mut x: usize = 0;
+    let mut tree_count: usize = 0;
+    for tree_line in woods.iter().step_by(down) {
+        if tree_line[x % tree_line.len()] == tree {
+            tree_count += 1;
+        }
+        x = x + right;
+    }
+    println!(
+        "right={}, down={}, tree={}, tree_count={}",
+        right, down, tree, tree_count
+    );
+    return tree_count;
+}
+
+fn day3_2() {
+    println!("=== Day 3 | Puzzle 2 ===");
+    let mut woods: Vec<Vec<char>> = Vec::new();
+    for line in reader() {
+        woods.push(line.trim().chars().collect());
+    }
+
+    let a = traverse(&woods, 1, 1, '#');
+    let b = traverse(&woods, 3, 1, '#');
+    let c = traverse(&woods, 5, 1, '#');
+    let d = traverse(&woods, 7, 1, '#');
+    let e = traverse(&woods, 1, 2, '#');
+    println!("day3 answer: {}", a * b * c * d * e);
+}
+
+fn day3_1() {
+    println!("=== Day 3| Puzzle 1 ===");
+    let mut woods: Vec<Vec<char>> = Vec::new();
+    for line in reader() {
+        woods.push(line.trim().chars().collect());
+    }
+    traverse(&woods, 3, 1, '#');
 }
 
 #[derive(Debug)]
