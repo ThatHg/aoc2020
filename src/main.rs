@@ -19,10 +19,81 @@ fn main() {
             "day4_2" => day4_2(),
             "day5_1" => day5_1(),
             "day5_2" => day5_2(),
+            "day6_1" => day6_1(),
+            "day6_2" => day6_2(),
             _ => println!("No solution for puzzle: {}", puzzle),
         },
         None => println!("No input..."),
     }
+}
+
+fn intersect(a: &Vec<char>, b: &Vec<char>) -> Vec<char> {
+    let mut intersection: Vec<char> = Vec::new();
+    for el_a in a {
+        if b.contains(el_a) {
+            intersection.push(*el_a);
+        }
+    }
+    return intersection;
+}
+
+fn union(a: &Vec<char>, b: &Vec<char>) -> Vec<char> {
+    let mut union: Vec<char> = a.clone();
+    for el_b in b {
+        if !union.contains(el_b) {
+            union.push(*el_b);
+        }
+    }
+    return union;
+}
+
+fn day6_2() {
+    let mut sum = 0;
+    let mut done = false;
+    while !done {
+        let mut answers: Vec<char> = Vec::new();
+        done = true;
+        for line in reader() {
+            if line == "\n" || line == " " {
+                done = false;
+                break;
+            }
+            let row: Vec<char> = line.trim().chars().collect();
+            if !done {
+                answers = intersect(&answers, &row);
+            } else {
+                answers = union(&answers, &row);
+            }
+            done = false;
+        }
+        sum += answers.len();
+        println!("Answers {:?}", answers);
+    }
+    println!("Sum {}", sum);
+}
+
+fn day6_1() {
+    let mut sum = 0;
+    loop {
+        let mut answers: Vec<char> = Vec::new();
+        for line in reader() {
+            if line == "\n" || line == "" {
+                break;
+            }
+            let row: Vec<char> = line.trim().chars().collect();
+            for a in row {
+                if !answers.contains(&a) {
+                    answers.push(a);
+                }
+            }
+        }
+        if answers.len() == 0 {
+            break;
+        }
+        sum += answers.len();
+        println!("Answers {}", answers.len());
+    }
+    println!("Sum {}", sum);
 }
 
 fn day5_2() {
