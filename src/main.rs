@@ -17,10 +17,90 @@ fn main() {
             "day3_2" => day3_2(),
             "day4_1" => day4_1(),
             "day4_2" => day4_2(),
+            "day5_1" => day5_1(),
+            "day5_2" => day5_2(),
             _ => println!("No solution for puzzle: {}", puzzle),
         },
         None => println!("No input..."),
     }
+}
+
+fn day5_2() {
+    const ROWS: usize = 128;
+    const COLUMNS: usize = 8;
+    let mut seat_array: [bool; ROWS * COLUMNS] = [false; ROWS * COLUMNS];
+    let get_low_or_high = |v: (f32, f32, char)| -> f32 {
+        match v.2 {
+            'F' | 'L' => return v.0,
+            'B' | 'R' => return v.1,
+            _ => return 0.0,
+        }
+    };
+    for line in reader() {
+        let code: Vec<char> = line.trim().chars().collect();
+        let mut row: (f32, f32, char) = (0.0, 127.0, '.');
+        let mut column: (f32, f32, char) = (0.0, 7.0, '.');
+        for c in code {
+            match c {
+                'F' => row = (row.0, ((row.0 + row.1) / 2.0).floor(), c),
+                'B' => row = (((row.0 + row.1) / 2.0).ceil(), row.1, c),
+                'L' => column = (column.0, ((column.0 + column.1) / 2.0).floor(), c),
+                'R' => column = (((column.0 + column.1) / 2.0).ceil(), column.1, c),
+                _ => {
+                    println!("Unknown char {}, in line {}", c, line);
+                }
+            }
+        }
+        let row_nr = get_low_or_high(row);
+        let column_nr = get_low_or_high(column);
+        seat_array[(row_nr * 8.0 + column_nr) as usize] = true;
+    }
+    for i in ROWS..seat_array.len() - ROWS {
+        if !seat_array[i] {
+            println!("Your seat id is: {}", i);
+        }
+    }
+}
+
+fn day5_1() {
+    let get_low_or_high = |v: (f32, f32, char)| -> f32 {
+        match v.2 {
+            'F' | 'L' => return v.0,
+            'B' | 'R' => return v.1,
+            _ => return 0.0,
+        }
+    };
+    let mut highest = 0.0;
+    for line in reader() {
+        let code: Vec<char> = line.trim().chars().collect();
+        let mut row: (f32, f32, char) = (0.0, 127.0, '.');
+        let mut column: (f32, f32, char) = (0.0, 7.0, '.');
+        for c in code {
+            match c {
+                'F' => row = (row.0, ((row.0 + row.1) / 2.0).floor(), c),
+                'B' => row = (((row.0 + row.1) / 2.0).ceil(), row.1, c),
+                'L' => column = (column.0, ((column.0 + column.1) / 2.0).floor(), c),
+                'R' => column = (((column.0 + column.1) / 2.0).ceil(), column.1, c),
+                _ => {
+                    println!("Unknown char {}, in line {}", c, line);
+                }
+            }
+        }
+        let row_nr = get_low_or_high(row);
+        let column_nr = get_low_or_high(column);
+        let seat_nr = row_nr * 8.0 + column_nr;
+        if seat_nr > highest {
+            highest = seat_nr;
+        }
+        println!(
+            "{}: row {}, column {}, seat ID {}",
+            line.trim(),
+            row_nr,
+            column_nr,
+            seat_nr
+        );
+    }
+    println!("Largest id: {}", highest);
 }
 
 fn validate_fields(passport: &String) -> bool {
